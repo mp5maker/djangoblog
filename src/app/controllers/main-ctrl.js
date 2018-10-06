@@ -1,6 +1,8 @@
 (function() {
+    "use strict";
+    
     angular.module('blog')
-    .controller('mainCtrl', function(){
-
+    .controller('mainCtrl', function($scope){
+        $scope.name = "Photon"
     });
-})()
+})();

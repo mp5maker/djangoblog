@@ -18,9 +18,9 @@
   },
   "homepage": "https://github.com/mp5maker/djangoblog#readme",
   "devDependencies": {
-    "@uirouter/angularjs": "^1.0.20",
     "angular": "^1.7.5",
     "angular-animate": "^1.7.5",
+    "angular-ui-router": "^1.0.20",
     "bootstrap": "^4.1.3",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
