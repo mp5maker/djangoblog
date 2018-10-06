@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container" ng-controller="mainCtrl">
-    <div class="row">
-        <div class="col">
-            Hello Landing Page
+    {% verbatim %}
+        <div class="container" ng-controller="mainCtrl">
+            <div class="row">
+                <div class="col">
+                    Hello {{ name }}
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    {% endverbatim %}
 {% endblock %}

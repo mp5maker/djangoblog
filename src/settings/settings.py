@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # Django Apps
-    'pages',
+    'app',
 
     # Django restframework
     'rest_framework',

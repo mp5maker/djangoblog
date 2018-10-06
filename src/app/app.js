@@ -3,8 +3,8 @@
 
     var modules = [
         'ngAnimate',
-        'ui.router',        
-    ]
+        'ui.router'        
+    ];
 
     angular.module('blog', modules);
-})()
+})();

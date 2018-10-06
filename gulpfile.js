@@ -36,7 +36,7 @@ var libraryjs = [
     'node_modules/bootstrap/dist/js/bootstrap.js',
     'node_modules/angular/angular.js',
     'node_modules/angular-animate/angular-animate.js',
-    'node_modules/@uirouter/core/_bundles/ui-router-core.js',
+    'node_modules/angular-ui-router/release/angular-ui-router.min.js',
 ];
 
 // Library Javascript
