@@ -8,3 +8,9 @@
 
     angular.module('blog', modules);
 })()
+(function() {
+    angular.module('blog')
+    .controller('mainCtrl', function(){
+
+    });
+})()
