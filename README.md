@@ -52,3 +52,49 @@ npm install --save-dev gulp gulp-sass gulp-concat
 ```
 
 > Good Luck Learning! :D :D
+
+## How the authentication works ##
+> Do no memorize just learn the concept flow
+
+**Working in shell**
+1) Check in settings.py
+2) *django.contrib.auth*
+3) Using str(Model.query), dir(Model), Model._meta.get_fields()
+
+```bash
+from django.contrib.auth.models import User
+
+# Gives all the methods and attributes associeated with User
+dir(User)
+
+# Gives list of field names
+User._meta.get_fields() 
+```
+
+**Creating a User**
+```bash
+user = User.objects.create_user('login', 'email@hotmail.com', 'password')
+user.save()
+```
+
+**Authentication**
+```bash
+from django.contrib.auth import authenticate
+user = authenticate(username="login", password="password")
+if user is not None:
+    print("This user exists")
+else:
+    print("Invalid User")
+```
+
+**Urls Provided by Django Default Authentication**
+```bash
+login/ [name='login']
+logout/ [name='logout']
+password_change/ [name='password_change']
+password_change/done/ [name='password_change_done']
+password_reset/ [name='password_reset']
+password_reset/done/ [name='password_reset_done']
+reset/<uidb64>/<token>/ [name='password_reset_confirm']
+reset/done/ [name='password_reset_complete']
+```
