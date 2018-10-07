@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     # Django restframework
     'rest_framework',
+    'rest_framework.authtoken',
 
     # Default Setting From Django Frame Work
     'django.contrib.admin',
@@ -48,6 +49,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated', 
+        'rest_framework.permissions.IsAdminUser'
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
