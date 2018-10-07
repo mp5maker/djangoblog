@@ -1,13 +1,35 @@
-(function() {
-    'use strict';
+(function () {
+    "use strict";
 
     var modules = [
         'ngAnimate',
-        'ui.router'        
+        'ui.router',
     ];
 
     angular.module('blog', modules);
 })();
+(function() {
+    "use strict";
+
+    angular.module('blog')
+    .directive('blogFooter', function() {
+        return {
+            restrict: "E",
+            templateUrl: "/static/layouts/blog-footer.html"
+        }
+    })
+})();
+(function() {
+    "use strict";
+
+    angular.module('blog')
+    .directive('blogHeader', function() {
+        return  {
+            restrict: "E",
+            templateUrl: "/static/layouts/blog-header.html"
+        }
+    });
+})(); 
 (function() {
     "use strict";
     

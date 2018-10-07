@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django Api
+    'api',
+
     # Django Apps
     'app',
 
@@ -131,4 +134,5 @@ STATIC_URL = '/static/'
 # Common place for static files which contains css, javascripts
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'app/templates'),
 ]

@@ -1,12 +1,22 @@
-{% extends 'base.html' %}
-{% block content %}
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Django Blog</title>
+    {% load static %}
+    <link rel="stylesheet"  href="{% static 'library.css' %}" />
+    <link rel="stylesheet" href="{% static 'main.css' %}" />
+</head>
+<body ng-app="blog">
     {% verbatim %}
-        <div class="container" ng-controller="mainCtrl">
-            <div class="row">
-                <div class="col">
-                    Hello {{ name }}
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid" ng-controller="mainCtrl">
+        <blog-header></blog-header>
+        <blog-footer></blog-footer>
+    </div>
     {% endverbatim %}
-{% endblock %}
+    <script src="{% static 'library.js' %}"></script>
+    <script src="{% static 'main.js' %}"></script>
+</body>
+</html>

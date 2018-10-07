@@ -1,9 +1,9 @@
-(function() {
-    'use strict';
+(function () {
+    "use strict";
 
     var modules = [
         'ngAnimate',
-        'ui.router'        
+        'ui.router',
     ];
 
     angular.module('blog', modules);

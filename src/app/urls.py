@@ -4,5 +4,5 @@ from .views import LandingPage
 app_name = 'app'
 
 urlpatterns = [
-    url(r'^$', LandingPage.as_view(), name='landing-page')
-]
+    url(r'^$', LandingPage.as_view(), name='index')
+];
