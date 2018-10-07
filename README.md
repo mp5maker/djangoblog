@@ -122,3 +122,15 @@ class UserListView(ListAPIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated, )
 ```
+
+## Django Rest Authentication ##
+```bash
+pip install django-rest-auth
+```
+
+```python
+INSTALLED_APPS = [
+    'rest_auth',
+    ...
+]
+```

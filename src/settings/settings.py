@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # Django restframework
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_auth',
+
 
     # Default Setting From Django Frame Work
     'django.contrib.admin',
