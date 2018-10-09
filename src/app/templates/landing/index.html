@@ -6,14 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Django Blog</title>
     {% load static %}
+    <link rel="shortcut icon"  href="{% static 'favicon.ico' %}" />
     <link rel="stylesheet"  href="{% static 'library.css' %}" />
     <link rel="stylesheet" href="{% static 'main.css' %}" />
 </head>
 <body ng-app="blog">
     {% verbatim %}
-    <div class="container-fluid" ng-controller="mainCtrl">
-        <blog-header></blog-header>
-        <blog-footer></blog-footer>
+    <div ng-controller="mainCtrl">
+        <div class="container-fluid" ng-if="authorizedUser">
+            <blog-header></blog-header>
+            <blog-footer></blog-footer>
+        </div>
+        <div class="container-fluid"  ng-if="!authorizedUser">
+            <blog-login></blog-login>
+        </div>
     </div>
     {% endverbatim %}
     <script src="{% static 'library.js' %}"></script>

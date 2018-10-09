@@ -29,6 +29,8 @@
     "popper.js": "^1.14.4"
   },
   "dependencies": {
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "materialize-css": "^1.0.0",
+    "underscore": "^1.9.1"
   }
 }

@@ -2,12 +2,12 @@
     "use strict";
 
     angular.module('blog')
-    .directive('blogFooter', Ctrl);
+    .directive('blogLogin', Ctrl);
 
-    function Ctrl() {
+    function Ctrl () {
         return {
             restrict: "E",
-            templateUrl: "/static/layouts/blog-footer.html"
+            templateUrl: "/static/layouts/blog-login.html"
         }
     }
 })();
