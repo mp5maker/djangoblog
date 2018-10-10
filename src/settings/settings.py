@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Extra Django 
+    'django.contrib.admindocs'
 ]
 
 REST_FRAMEWORK = {

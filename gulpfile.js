@@ -6,7 +6,7 @@ gulp.task('default', ['css', 'js', 'librarycss', 'libraryjs']);
 
 // Modifying Bootstrap and Materialize
 gulp.task('css', function () {
-    gulp.src('src/app/sass/**/*.scss')
+    gulp.src('src/app/sass/bootstrap.scss')
         .pipe(concat('main.css'))
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('src/static'))

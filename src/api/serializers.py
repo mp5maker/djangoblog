@@ -21,10 +21,12 @@ class UserSerializer(ModelSerializer):
         )
 
 class PostSerializer(ModelSerializer):
+    author = UserSerializer()
     class Meta:
         model = Post
         fields = (
             'id',
+            'author',
             'title',
             'description'
         )
