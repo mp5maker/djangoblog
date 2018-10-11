@@ -4,7 +4,12 @@ from django.db.models import Q
 from .models import Post
 
 # Serializer and API View
-from .serializers import UserSerializer, PostSerializer
+from .serializers import (
+    UserSerializer, 
+    PostSerializer,
+    PostHyperlinkedIdentitySerializer,
+    PostMethodFieldSerializer
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import (
@@ -36,12 +41,14 @@ from .pagination import (
 
 from .permissions import IsOwnerOrReadOnly
 
+# USER LIST [READ]
 class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated, )
 
+# CURRENT USER [DETAIL]
 class CurrentUserView(APIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated, )
@@ -49,12 +56,14 @@ class CurrentUserView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+# POST [LIST]
 class PostListView(ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated, )
 
+# POST [DETAIL]
 class PostDetailView(RetrieveAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -62,6 +71,7 @@ class PostDetailView(RetrieveAPIView):
     permission_classes = (IsAuthenticated, )
     lookup_field = "id"
 
+# POST [UPDATE]
 class PostUpdateView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -69,6 +79,7 @@ class PostUpdateView(UpdateAPIView):
     permision_classes = (IsAuthenticated, )
     lookup_field = "id"
 
+# POST [DESTROY]
 class PostDeleteView(DestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -76,6 +87,7 @@ class PostDeleteView(DestroyAPIView):
     permission_classes = (IsAuthenticated, )
     lookup_field = "id"
 
+# POST [CREATE]
 class PostCreateView(CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -87,6 +99,7 @@ class PostCreateView(CreateAPIView):
     # def perform_create(self, serializer):
     #     serializer.save(author=self.request.user, title="my title")
 
+# POST [READ & UPDATE]
 class PostRetrieveUpdateView(RetrieveUpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -94,7 +107,7 @@ class PostRetrieveUpdateView(RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     lookup_field = "id"
 
-
+# POST [FILTER]
 class PostOverridingListView(ListAPIView):
     serializer_class = PostSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication)
@@ -104,6 +117,7 @@ class PostOverridingListView(ListAPIView):
         posts = Post.objects.all()
         return posts.filter(title__startswith="G") 
 
+# POST [Q FILTER :: DJANGO BUILT-IN]
 class PostQuerySetView(ListAPIView):
     serializer_class = PostSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication)
@@ -124,6 +138,7 @@ class PostQuerySetView(ListAPIView):
         ).distinct()
         return queryset_list
 
+# POST [SEARCH FILTER, ORDER FILTER :: REST FRAMEWORK]
 class PostSearchFilterView(ListAPIView):
     authentication_classes = (
         SessionAuthentication,
@@ -153,6 +168,7 @@ class PostSearchFilterView(ListAPIView):
         ) 
         return queryset_list
 
+# POST [LIMITOFFSETPAGINATION :: REST FRAMEWORK]
 class PostLimitOffsetView(ListAPIView):
     authentication_classes = (
         SessionAuthentication,
@@ -166,6 +182,7 @@ class PostLimitOffsetView(ListAPIView):
     serializer_class = PostSerializer
     pagination_class = PostLimitOffsetPagination
 
+# POST [PAGENUMBERPAGINATION :: REST FRAMEWORK]
 class PostPagePaginationView(ListAPIView):
     authentication_classes = (
         SessionAuthentication,
@@ -178,3 +195,27 @@ class PostPagePaginationView(ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = PostPageNumberPagination
+
+# POST [HYPERLINKIDENTITYFIELD :: REST FRAMEWORK]
+class PostHyperlinkedIdentityView(ListAPIView):
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    queryset = Post.objects.all()
+    serializer_class = PostHyperlinkedIdentitySerializer
+
+# POST [SerializerMethodField :: REST FRAMEWORK]
+class PostMethodFieldView(ListAPIView):
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    queryset = Post.objects.all()
+    serializer_class = PostMethodFieldSerializer

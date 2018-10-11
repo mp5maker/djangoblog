@@ -128,10 +128,98 @@ class UserListView(ListAPIView):
 ```bash
 pip install django-rest-auth
 ```
-
+settings.py
 ```python
 INSTALLED_APPS = [
+    # Django Api
+    'api',
+
+    # Django Apps
+    'app',
+
+    # Django Rest Framework
+    'rest_framework',
+    'rest_framework.authtoken',
     'rest_auth',
-    ...
+
+
+    # Default Setting From Django Frame Work
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    # Extra Django 
+    'django.contrib.admindocs'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated', 
+        'rest_framework.permissions.IsAdminUser'
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 1,
+}
 ```
+
+## Rest Framework ##
+**Serializers**
+1. from *rest_framework.serializers* import (
+    **ModelSerializer,
+    HyperlinkedIdentityField,
+    SerializerMethodField**
+    )
+
+**Views**
+1. from *rest_framework.views* import **APIView**
+
+2. from *rest_framework.generics* (
+    **ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+    RetrieveUpdateAPIView**
+    )
+
+3. from *rest_framework.authentication* import (
+    **SessionAuthentication,
+    BasicAuthentication**
+    )
+
+4. from *rest_framework.filters* import (
+    **SearchFilter,
+    OrderingFilter**
+    )
+
+5. from *rest_framework.permissions* import (
+    **AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly,**
+    )
+
+6. from *rest_framework.permissions* import (
+    **AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly,**
+    )
+
+**Permissions**
+1. from *rest_framework.permissions* import **BasePermission**
+
+**Pagination**
+1. from *rest_framework.pagination* import(
+    **LimitOffsetPagination,
+    PageNumberPagination**
+)

@@ -13,6 +13,8 @@ from .views import (
     PostSearchFilterView,
     PostLimitOffsetView,
     PostPagePaginationView,
+    PostHyperlinkedIdentityView,
+    PostMethodFieldView,
 )
 
 app_name = "api"
@@ -32,4 +34,6 @@ urlpatterns = [
     url(r'^posts-search-filter/$', PostSearchFilterView.as_view(), name='post-search-filter-view'),
     url(r'^posts-limit-offset-pagination/$',  PostLimitOffsetView.as_view(), name='post-limit-offset-pagination-view'),
     url(r'^posts-page-number-pagination/$',  PostPagePaginationView.as_view(), name='post-page-number-pagination-view'),
+    url(r'^posts-hyperlinked-identity/$',  PostHyperlinkedIdentityView.as_view(), name='post-hyperlinked-identity'),
+    url(r'^posts-method-field/$',  PostMethodFieldView.as_view(), name='post-method-field'),
 ]
