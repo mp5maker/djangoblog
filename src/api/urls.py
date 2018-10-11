@@ -8,7 +8,11 @@ from .views import (
     PostDeleteView,
     PostCreateView,
     PostRetrieveUpdateView,
-    PostOverridingListView
+    PostOverridingListView,
+    PostQuerySetView,
+    PostSearchFilterView,
+    PostLimitOffsetView,
+    PostPagePaginationView,
 )
 
 app_name = "api"
@@ -24,4 +28,8 @@ urlpatterns = [
     url(r'^posts/create/$', PostCreateView.as_view(), name="post-create-view"),
     url(r'^posts/update/(?P<id>[0-9]+)$', PostRetrieveUpdateView.as_view() , name="post-update-view"),
     url(r'^posts-override/$', PostOverridingListView.as_view(), name='post-overriding-list-view'),
+    url(r'^posts-queryset/$', PostQuerySetView.as_view(), name='post-queryset-list-view'),
+    url(r'^posts-search-filter/$', PostSearchFilterView.as_view(), name='post-search-filter-view'),
+    url(r'^posts-limit-offset-pagination/$',  PostLimitOffsetView.as_view(), name='post-limit-offset-pagination-view'),
+    url(r'^posts-page-number-pagination/$',  PostPagePaginationView.as_view(), name='post-page-number-pagination-view'),
 ]

@@ -1,5 +1,6 @@
 # Importing User Model
 from django.contrib.auth.models import User
+from django.db.models import Q
 from .models import Post
 
 # Serializer and API View
@@ -21,6 +22,16 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
     IsAuthenticatedOrReadOnly,
+)
+
+from rest_framework.filters import (
+    SearchFilter,
+    OrderingFilter
+)
+
+from .pagination import (
+    PostLimitOffsetPagination,
+    PostPageNumberPagination
 )
 
 from .permissions import IsOwnerOrReadOnly
@@ -88,8 +99,82 @@ class PostOverridingListView(ListAPIView):
     serializer_class = PostSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated, )
-    lookup_field = "id"
 
     def get_queryset(self, *args, **kwargs):
         posts = Post.objects.all()
         return posts.filter(title__startswith="G") 
+
+class PostQuerySetView(ListAPIView):
+    serializer_class = PostSerializer
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated, )
+
+    # Query Set using GET
+    def get_queryset(self, *args, **kwargs):
+        queryset_list = Post.objects.all()
+        query = self.request.GET.get("q") or None
+        if query is None:
+            return queryset_list
+        queryset_list = queryset_list.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) 
+            # Q(author__first_name__icontains=query) |
+            # Q(author__last_name__icontains=query) 
+            # Q(author__username__icontains=query)
+        ).distinct()
+        return queryset_list
+
+class PostSearchFilterView(ListAPIView):
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    serializer_class = PostSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = [
+        'title', 
+        'description', 
+        'author__first_name', 
+        'author__last_name', 
+        'author__username'
+    ]
+    # http://localhost:8000/api/v1/posts-search-filter/?search=a&q=g&ordering=title
+    def get_queryset(self, *args, **kwargs):
+        queryset_list = Post.objects.all()
+        query = self.request.GET.get('q') or None
+        if query is None:
+            return queryset_list
+        queryset_list = queryset_list.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query)
+        ) 
+        return queryset_list
+
+class PostLimitOffsetView(ListAPIView):
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    # http://localhost:8000/api/v1/posts/?limit=1&offset=1
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    pagination_class = PostLimitOffsetPagination
+
+class PostPagePaginationView(ListAPIView):
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    # http://localhost:8000/api/v1/posts/?limit=1&offset=1
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    pagination_class = PostPageNumberPagination
