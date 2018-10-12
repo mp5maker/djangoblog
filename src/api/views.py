@@ -8,7 +8,9 @@ from .serializers import (
     UserSerializer, 
     PostSerializer,
     PostHyperlinkedIdentitySerializer,
-    PostMethodFieldSerializer
+    PostMethodFieldSerializer,
+    PostReadOnlyFieldSerializer,
+    PostValidationSerializer
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,6 +42,14 @@ from .pagination import (
 )
 
 from .permissions import IsOwnerOrReadOnly
+
+from rest_framework.mixins import (
+    ListModelMixin,
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin
+)
 
 # USER LIST [READ]
 class UserListView(ListAPIView):
@@ -219,3 +229,47 @@ class PostMethodFieldView(ListAPIView):
     )
     queryset = Post.objects.all()
     serializer_class = PostMethodFieldSerializer
+
+# POST [ModelMixins :: REST FRAMEWORK]
+class PostEditDeleteMixinView(UpdateModelMixin, DestroyModelMixin, RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication,
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+    lookup_field = 'id'
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+# POST [READONLYFIELDS :: REST FRAMEWORK]
+class PostReadOnlyFieldView(RetrieveUpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostReadOnlyFieldSerializer
+    lookup_field = "id"
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication,
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )
+
+
+class PostValidationView(CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostValidationSerializer
+    authentication_classes = (
+        BasicAuthentication,
+        SessionAuthentication,
+    )
+    permission_classes = (
+        IsAuthenticated,
+    )

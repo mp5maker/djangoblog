@@ -3,7 +3,8 @@ from .models import Post
 from rest_framework.serializers import (
     ModelSerializer,
     HyperlinkedIdentityField,
-    SerializerMethodField
+    SerializerMethodField,
+    ValidationError,
 )
 
 # USER SERIALIZER [MODEL SERIALIZER :: REST FRAMEWORK]
@@ -74,3 +75,28 @@ class PostMethodFieldSerializer(ModelSerializer):
     
     def get_author(self, obj):
         return str(obj.author.username)
+
+class PostReadOnlyFieldSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'id',
+            'title',
+            'description'
+        )
+        read_only_fields = [
+            'description',
+        ]
+
+class PostValidationSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'id',
+            'title',
+            'description'
+        )
+    # Validation
+    def validate_title(self, title):
+        if title == 'abc':
+            raise ValidationError("Not a valid title")

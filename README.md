@@ -53,10 +53,7 @@ npm install --save-dev gulp gulp-sass gulp-concat
 
 > Good Luck Learning! :D :D
 
-## How the authentication works ##
-> Do no memorize just learn the concept flow
-
-**Working in shell**
+## Authentication ##
 1) Check in settings.py
 2) *django.contrib.auth*
 3) Using str(Model.query), dir(Model), Model._meta.get_fields()
@@ -86,47 +83,11 @@ if user is not None:
 else:
     print("Invalid User")
 ```
-
-**Adding Rest Framework Authorization Token**
-
-settings.py
-```bash
-INSTALLED_APPS = [
-    'rest_framework.authtoken',
-    'rest_auth'
-    ...
-]
-```
-
-```bash
-python manage.py migrate
-```
-
-settings.py
-```bash
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', )
-}
-```
-# Essentials for Authentication
-```python
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-
-class UserListView(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated, )
-```
-
-## Django Rest Authentication ##
+## Rest Framework ##
+**Authentication and Filter Setup**
 ```bash
 pip install django-rest-auth
+pip install django-filter
 ```
 settings.py
 ```python
@@ -156,26 +117,37 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
+    # Authentication
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
+    # Permission
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', 
         'rest_framework.permissions.IsAdminUser'
     ),
+    # Filter
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    # Pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 1,
 }
 ```
 
-## Rest Framework ##
+```bash
+# For rest_framework.authtoken
+python manage.py migrate
+```
+
+***
+
 **Serializers**
 1. from *rest_framework.serializers* import (
     **ModelSerializer,
     HyperlinkedIdentityField,
+    ValidationError,
     SerializerMethodField**
     )
 
@@ -215,6 +187,14 @@ REST_FRAMEWORK = {
     IsAuthenticatedOrReadOnly,**
     )
 
+7. from *rest_framework.mixins* import (
+    **ListModelMixin,
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin**
+    )
+
 **Permissions**
 1. from *rest_framework.permissions* import **BasePermission**
 
@@ -223,3 +203,100 @@ REST_FRAMEWORK = {
     **LimitOffsetPagination,
     PageNumberPagination**
 )
+***
+
+**Serializer**
+```python
+## Typically we do that with the model with Foreign Key
+inheritance_field = SomeOtherSerializer()
+
+## Inside **Class Meta**
+model = SomeModel
+fields = (
+    'title',
+    'description',
+    'some_field',
+    'inheritance_field',
+    'url'
+)
+read_only_fields = [
+    'title',
+    'description'
+]
+extra_kwargs = {
+    "password" : {
+        "write_only": true
+    }
+}
+```
+
+**Serializer Modifier**
+```python
+1. SerializerMethodField() 
+    def get_some_field(self, obj):
+
+2. HyperlinkedIdentityField()
+    url = HyperlinkedIdentityField(
+        view_name='api:post-detail-view',
+        lookup_field='id'
+    )
+```
+
+***
+
+**View**
+```python
+1. queryset 
+2. serializer_class
+3. authentication_classes 
+4. permission_classes 
+5. pagination_classes
+```
+
+**Views Modifiers**
+```python
+1. def get_queryset(self, *args, **kwargs):
+2. def get(self, *args, **kwargs):
+2. def post(self, *args, **kwargs):
+3. def put(self, *args, **kwargs):
+3. def patch(self, *args, **kwargs):
+4. def delete(self, *args, **kwargs):
+5. def create(self, *args, **kwargs)"
+```
+
+**Mixins**
+```python
+1. self.list(request, *args, **kwargs)
+2. self.retrieve(request, *args, **kwargs)
+3. self.create(request, *args, **kwargs)
+4. self.update(request, *args, **kwargs)
+5. self.destroy(request, *args, **kwargs)
+```
+
+***
+
+**Persmission**
+```python
+# BASE PERMISSION
+class IsOwnerOrReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in self.my_safe_method:
+            return True
+        return obj.author == request.user
+```
+
+**Pagination**
+```python
+# POST [LIMITOFFSETPAGINATION :: REST FRAMEWORK]
+class PostLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 1
+    max_limit = 2
+
+# POST [PAGENUMBERPAGINATION :: REST FRAMEWORK]
+class PostPageNumberPagination(PageNumberPagination):
+    page_size = 2
+```
+
+***
+
+## Login System Using Rest Framework ##

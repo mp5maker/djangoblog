@@ -15,6 +15,9 @@ from .views import (
     PostPagePaginationView,
     PostHyperlinkedIdentityView,
     PostMethodFieldView,
+    PostEditDeleteMixinView,
+    PostReadOnlyFieldView,
+    PostValidationView,
 )
 
 app_name = "api"
@@ -36,4 +39,7 @@ urlpatterns = [
     url(r'^posts-page-number-pagination/$',  PostPagePaginationView.as_view(), name='post-page-number-pagination-view'),
     url(r'^posts-hyperlinked-identity/$',  PostHyperlinkedIdentityView.as_view(), name='post-hyperlinked-identity'),
     url(r'^posts-method-field/$',  PostMethodFieldView.as_view(), name='post-method-field'),
+    url(r'^post-detail-edit-delete-mixins/(?P<id>[0-9]+)$', PostEditDeleteMixinView.as_view(), name='post-detail-edit-delete-mixins'),
+    url(r'^post-readonly/(?P<id>[0-9]+)$', PostReadOnlyFieldView.as_view(), name='post-readonly'),
+    url(r'^post-validation/$', PostValidationView.as_view(), name='post-validation'),
 ]
