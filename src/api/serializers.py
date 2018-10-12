@@ -100,3 +100,4 @@ class PostValidationSerializer(ModelSerializer):
     def validate_title(self, title):
         if title == 'abc':
             raise ValidationError("Not a valid title")
+        return title

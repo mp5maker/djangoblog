@@ -195,6 +195,10 @@ python manage.py migrate
     DestroyModelMixin**
     )
 
+9. from *rest_framework.response* import **Response**
+
+10. from *rest_framework.status* import **HTTP_200_OK, HTTP_400_BAD_REQUEST**
+
 **Permissions**
 1. from *rest_framework.permissions* import **BasePermission**
 
@@ -203,6 +207,7 @@ python manage.py migrate
     **LimitOffsetPagination,
     PageNumberPagination**
 )
+
 ***
 
 **Serializer**
@@ -300,3 +305,178 @@ class PostPageNumberPagination(PageNumberPagination):
 ***
 
 ## Login System Using Rest Framework ##
+serializers.py
+```python
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+
+from rest_framewok.serializers import (
+    HyperlinkedIdentityField,
+    ModelSerializer,
+    SerializerMethodField,
+    ValidationError,
+    EmailField,
+    CharField
+)
+
+User = get_user_mode()
+
+class UserCreateSerializer(ModelSerializer):
+    email = EmailField(label="Email Address")
+    email2 = EmailField(label="Confirm Email")
+    class Meta:
+        model User
+        fields = (
+            'username',
+            'email',
+            'email2',
+            'password',
+        )
+        extra_kwargs = {
+            "password": {
+                "write-only": true
+            }
+        }
+    
+    def create(self, validated_data):
+        print(validated_data)
+        username = validated_data['username']
+        email = validated_data['email']
+        password = validated_data['password']
+        user_obj = User(
+            username = username,
+            email = email
+        )
+        user.obj.set_password(password)
+        user_obj.save()
+        return validated_data
+
+    # Email Exists or not
+    def validate(self, data):
+        email = data['email']
+        user_qs = User.objects.filter(email=email)
+        if user_qs.exists():
+            raise ValidationError("This user has been already registered")
+        return data
+
+    # Validation Email and Email Confirm
+    def validate_email2(self, value):
+        data = self.get_initial()
+        email1 = data.get("email")
+        email2 = value
+        if email != email2:
+            raise ValidationError("Emails must match")
+        return value
+
+class UserLoginSerializer(ModelSerializer):
+    token = CharField(allow_blank=True, read_only=True)
+    username = CharField(required=False, allow_blank=True)
+    email = EmailField(label="Email Address", required=False, allow_blank=True)
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'email',
+            'password',
+            'token',
+        ]
+        extra_kwargs = {
+            "password": {
+                "write_only": True
+            }
+        }
+    
+    def validate(self, data):
+        user_obj = None
+        email = data.get("email", None)
+        username = data.get("username", None)
+        password = data['password']
+        if not email and not username:
+            raise ValidationError("A username or email is required to login")
+        user = User.objects.filter(
+                Q(email=email) |
+                Q(username=username
+            ).distinct()
+        )
+        # user = user.exclude(email__isnull=True).esclude(email__iexact='')
+        if user.exists() and user.count() == 1:
+            user_obj = user.first()
+        else:
+            raise ValidationError("This username/email is not valid")
+        if user_obj:
+            if not user_obj.check_password(password):
+                raise ValidationError("Incorrect Credentials please try again")
+        data["token"] = "Some Random Token"
+        return data
+```
+
+views.py
+```python
+from rest_framework.generics import (
+    APIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+    CreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
+
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly,
+)
+
+from rest_framework.mixins import (
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin
+)
+
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+
+from .serializer import (
+    UserCreateSerializer,
+    UserLoginSerializer
+)
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class UserCreateAPIView(CreateAPIView):
+    serializer_class = UserCreateSerializer
+    queryset = User.objects.all()
+
+class UserLoginView(APIView):
+    permission_classes = [AllowAny]
+    serializer = UserLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = UserLoginSerializer(data=data)
+        if serializer.is_valid(raise_exception=True)
+            new_data = serializer.data
+            return Response(new, status=HTTP_200_OK)
+    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+```
+
+urls.py
+```python
+from django.conf.urls import url
+from django.contrib import admin
+
+from .view import (
+    UserCreateAPIView,
+    UserLoginView
+)
+
+urlpatterns = [
+    url(r'^register/$', UserCreateAPIView.as_view(), name="register")
+    url(r'^login/$', UserLoginView.as_view(), name="login")
+]
+```
