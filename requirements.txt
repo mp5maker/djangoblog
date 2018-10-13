@@ -1,4 +1,7 @@
 Django==1.11.16
-djangorestframework==3.7.7
-django-rest-auth==0.9.3
 django-filter==2.0.0
+django-rest-auth==0.9.3
+djangorestframework==3.7.7
+freeze==1.0.10
+pytz==2018.5
+six==1.11.0

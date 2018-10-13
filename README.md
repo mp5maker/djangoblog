@@ -17,6 +17,15 @@ mkvirtualenv djangoblog
 touch requirements.txt
 pip install freeze
 ```
+If modules are already installed
+```bash
+pip freeze >  requirements.txt
+```
+
+To install the modules
+```bash
+pip freeze -r requirements.txt
+```
 
 requirements.txt
 ```txt
@@ -479,4 +488,75 @@ urlpatterns = [
     url(r'^register/$', UserCreateAPIView.as_view(), name="register")
     url(r'^login/$', UserLoginView.as_view(), name="login")
 ]
+```
+***
+
+## Signals ##
+signals.py
+```python
+from django.db.models.signals import (
+    pre_init,
+    post_init,
+    pre_save,
+    post_save,
+    pre_delete,
+    post_delete,
+    m2m_changed,
+    class_prepared,
+    pre_migrate,
+    post_migrate,
+)
+
+from django.core.signals import (
+    request_started,
+    request_finished,
+    got_request_exception,
+    setting_changed,
+)
+
+from django.dispatch import receiver
+
+from .models import Post
+
+# post_save.connect(Callback function, Sender)
+def print_post(sender, instance, created, **kwargs):
+    print("Initial Signal")
+    print(instance)
+    print(created)
+post_save.connect(print_post, sender=Post)
+
+# receiver(which_signal, Sender)
+@receiver(post_save, sender=Post)
+def print_post_alternative(sender, instance, created, **kwargs):
+    print("Alternative way to send the signal")
+    print(instance)
+    print(created)
+    
+```
+
+***
+
+__init__.py
+```python
+# App Name . apps files . function
+default_app_config = 'api.apps.ApiConfig'
+```
+
+***
+
+apps.py
+```python
+from django.apps import AppConfig
+
+class ApiConfig(AppConfig):
+    name = 'api'
+    
+    def ready(self):
+        # Only importing this would work with decorator method
+        from .signals import print_post, print_post_alternative
+
+        # For the non-decorator method
+        from django.db.models.signals import post_save
+        from .models import Post
+        post_save.connect(print_post, sender=Post)
 ```
